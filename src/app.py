@@ -4,7 +4,11 @@ import pyaudio
 import streamlit as st
 from langchain.memory import ConversationBufferMemory
 
-from utils import record_audio_chunk, transcribe_audio, get_response_llm, play_text_to_speech, load_whisper
+#from utils import record_audio_chunk, transcribe_audio, get_response_llm, play_text_to_speech, load_whisper
+
+from stt import record_audio_chunk, transcribe_audio, load_whisper
+from llm_model import get_response_llm
+from tts import play_text_to_speech
 
 chunk_file = 'temp_audio_chunk.wav'
 model = load_whisper() 
