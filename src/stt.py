@@ -1,14 +1,14 @@
 #Load credentials
 import os
 from dotenv import load_dotenv
-
+import librosa
 #to record audios
 import wave
 import pyaudio #audio in real-time
 from scipy.io import wavfile #to get audio in .wav file to feed into wishp
 import numpy as np
+from transformers import WhisperProcessor, WhisperForConditionalGeneration
 
-import whisper #used to load model from openai that will tranform audio to text
 
 #checking if the audio is silent. If ever the amplitude is less than 3k we consider it to be silent and hence we will not process it
 def is_silence(data, max_amplitude_threshold=3000):
@@ -56,17 +56,13 @@ def record_audio_chunk(audio, stream, chunk_length=5): #audio will record 5 sec
 
 #loading the model
 def load_whisper():
-    model = whisper.load_model("base")
-    return model
+    processor = WhisperProcessor.from_pretrained("openai/whisper-base.en")
+    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-base.en")
+    return processor, model
 
-
-#this is where we transform our audio to text
-def transcribe_audio(model, file_path):
-    print("Transcribing...")
-    # Print all files in the current directory
-    #print("Current directory files:", os.listdir())
-    if os.path.isfile(file_path):
-        results = model.transcribe(file_path) # , fp16=False
-        return results['text'] #returning results of text
-    else:
-        return None #if no audio in the path we specified
+def transcribe_audio(processor, model, file_path):
+    audio_input, _ = librosa.load(file_path, sr=16000)
+    input_features = processor(audio_input, sampling_rate=16000, return_tensors="pt").input_features
+    predicted_ids = model.generate(input_features)
+    transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)[0]
+    return transcription.strip()

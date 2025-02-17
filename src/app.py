@@ -3,7 +3,7 @@ import os
 import pyaudio
 import streamlit as st
 from langchain.memory import ConversationBufferMemory
-
+from transformers import WhisperProcessor, WhisperForConditionalGeneration
 #from utils import record_audio_chunk, transcribe_audio, get_response_llm, play_text_to_speech, load_whisper
 
 from stt import record_audio_chunk, transcribe_audio, load_whisper
@@ -11,7 +11,7 @@ from llm_model import get_response_llm
 from tts import play_text_to_speech
 
 chunk_file = 'temp_audio_chunk.wav'
-model = load_whisper() 
+processor, model = load_whisper()
 def main():
     st.markdown('<h1 style="color: darkblue;">AI Voice Assistant</h1>', unsafe_allow_html=True)
 
@@ -26,7 +26,8 @@ def main():
             # Record and save audio chunk
             record_audio_chunk(audio, stream) #start conversation with this line with AI, because it will record audio and then 
 #proceed to transceribe our audio using whisper model
-            text = transcribe_audio(model, chunk_file)
+            text = transcribe_audio(processor, model, chunk_file)
+
 
             if text is not None:
                 st.markdown(

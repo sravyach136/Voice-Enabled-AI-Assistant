@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-groq_api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 def load_prompt():
     input_prompt = """
