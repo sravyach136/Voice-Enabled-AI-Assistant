@@ -21,9 +21,7 @@ A real-time voice-enabled AI assistant that transcribes speech, processes querie
     git clone https://github.com/sravyach136/Voice-Enabled-AI-Assistant.git
    
 2. Navigate to the project directory:
-    ```bash
-    cd ai-voice-assistant
-    ```
+    
 3. Create and activate a virtual environment:
     ```bash
     python -m venv venv
