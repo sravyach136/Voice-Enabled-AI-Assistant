@@ -1,5 +1,6 @@
 #Load credentials
 import os
+import time
 from dotenv import load_dotenv
 import librosa
 #to record audios
@@ -30,7 +31,7 @@ def record_audio_chunk(audio, stream, chunk_length=5): #audio will record 5 sec
 #here, we start appending the frames of audio, chunk by chunk
     # Record the audio data in chunks
     for _ in range(num_chunks):
-        data = stream.read(1024)
+        data = stream.read(4096)
         frames.append(data)
 
 #path where we want to save the audio
@@ -56,13 +57,18 @@ def record_audio_chunk(audio, stream, chunk_length=5): #audio will record 5 sec
 
 #loading the model
 def load_whisper():
-    processor = WhisperProcessor.from_pretrained("openai/whisper-base.en")
-    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-base.en")
+    processor = WhisperProcessor.from_pretrained("openai/whisper-large-v3-turbo")
+    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v3-turbo")
     return processor, model
 
+
+# Function to transcribe audio with latency tracking
 def transcribe_audio(processor, model, file_path):
+    start_time = time.perf_counter()  # Start timer
     audio_input, _ = librosa.load(file_path, sr=16000)
     input_features = processor(audio_input, sampling_rate=16000, return_tensors="pt").input_features
     predicted_ids = model.generate(input_features)
     transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)[0]
+    stt_time = time.perf_counter() - start_time  # End timer
+    print(f"STT Time Taken: {stt_time:.3f} seconds")  # Log latency
     return transcription.strip()
