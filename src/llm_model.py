@@ -3,6 +3,7 @@ from langchain_core.prompts import PromptTemplate
 #from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 import os
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -61,7 +62,14 @@ def get_response_llm(user_question, memory):
         verbose=True, #to see output of our responses and also intial user question
         memory=memory #this will have the chat history
     )
+    
+     # Start time tracking
+    start_time = time.perf_counter()
 
     response = chain.invoke({"question": user_question})
+
+    # End time tracking
+    llm_latency = time.perf_counter() - start_time
+    print(f"LLM Response Time: {llm_latency:.3f} seconds")  
 
     return response['text'] #returning text of llm
