@@ -1,0 +1,17 @@
+#conda create -n f5-tts python=3.10
+#conda activate f5-tts
+
+torch>=2.0.1
+torchaudio>=2.0.1
+numpy>=1.24.0
+librosa>=0.10.0
+pydub>=0.25.1
+vocos>=0.1.0
+torchdiffeq>=0.2.3
+x_transformers>=2.0.0
+pypinyin>=0.47.1
+ema-pytorch>=0.2.3
+datasets>=2.14.5
+omegaconf>=2.3.0
+cached-path>=1.1.6
+ffmpeg-python>=0.2.0
